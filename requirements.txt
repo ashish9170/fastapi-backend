@@ -4,6 +4,8 @@ SQLAlchemy
 psycopg2-binary
 alembic
 python-dotenv
-pydantic-settings
 pydantic-settings==2.10.1
-pydantic-settings==2.10.1
+redis
+passlib[bcrypt]
+python-jose[cryptography]
+email-validator
