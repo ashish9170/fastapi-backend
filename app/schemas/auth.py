@@ -14,3 +14,7 @@ class LoginRequest(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+class TwoFAVerifySchema(BaseModel):
+    email: EmailStr
+    code: str

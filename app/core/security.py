@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from jose import jwt
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = "***REMOVED***"  # Use from settings/env in real app
+SECRET_KEY = "***REMOVED***"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
