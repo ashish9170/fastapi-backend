@@ -1,3 +1,5 @@
+import os
+import uvicorn
 from fastapi import FastAPI
 from app.api.v1.api import api_router
 from app.db.base import Base
@@ -25,3 +27,13 @@ def create_app() -> FastAPI:
     return app
 
 app = create_app()
+
+# For Railway deployment - run the server when this file is executed
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(
+        "app.main:app",  # Updated path to match your structure
+        host="0.0.0.0",
+        port=port,
+        reload=settings.ENV == "local"  # Only reload in local development
+    )
