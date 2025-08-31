@@ -6,7 +6,7 @@ from pydantic import Field
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Project"
-    DATABASE_URL: str = "postgresql+psycopg2://postgres:password@localhost:5432/abhinav"
+    DATABASE_URL: str = Field(..., env="DATABASE_URL")
     SECRET_KEY: str
     ANOTHER_VAR: Optional[str] = None
     EMAIL_PROVIDER: str
