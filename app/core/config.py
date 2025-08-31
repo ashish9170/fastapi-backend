@@ -6,7 +6,11 @@ from pydantic import Field
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Project"
-    DATABASE_URL: str = Field(..., env="DATABASE_URL")
+
+    # by default DATABASE_URL uthayega Railway me
+    DATABASE_URL: Optional[str] = None
+    DATABASE_PUBLIC_URL: Optional[str] = None
+
     SECRET_KEY: str
     ANOTHER_VAR: Optional[str] = None
     EMAIL_PROVIDER: str
@@ -24,8 +28,18 @@ class Settings(BaseSettings):
         env_file = ".env"
 
     def configure_env(self):
+        # Select correct DATABASE_URL based on ENV
         if self.ENV == "local":
-            self.BACKEND_CORS_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+            self.DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")
+        else:
+            self.DATABASE_URL = os.getenv("DATABASE_URL")
+
+        # Configure CORS
+        if self.ENV == "local":
+            self.BACKEND_CORS_ORIGINS = [
+                "http://localhost:3000",
+                "http://127.0.0.1:3000"
+            ]
         elif self.ENV == "staging":
             self.BACKEND_CORS_ORIGINS = ["https://staging.myfrontend.com"]
         elif self.ENV == "prod":
@@ -40,5 +54,7 @@ class Settings(BaseSettings):
             decode_responses=True
         )
 
+
+# Create settings object
 settings = Settings()
 settings.configure_env()
