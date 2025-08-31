@@ -29,19 +29,35 @@ class Settings(BaseSettings):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        # Debug info - remove after fixing
+        print(f"Environment: {self.ENV}")
+        print(f"Initial DATABASE_URL: {self.DATABASE_URL}")
+        print(f"Initial DATABASE_PUBLIC_URL: {self.DATABASE_PUBLIC_URL}")
         self.configure_env()
 
     def configure_env(self):
-        # Select correct DATABASE_URL based on ENV
+        # Configure database URL based on environment
         if self.ENV == "local":
-            # Use the loaded value, not os.getenv()
+            # For local development, use DATABASE_PUBLIC_URL
             if self.DATABASE_PUBLIC_URL:
                 self.DATABASE_URL = self.DATABASE_PUBLIC_URL
+            elif not self.DATABASE_URL:
+                raise ValueError("Local environment requires DATABASE_PUBLIC_URL or DATABASE_URL to be set")
         else:
-            # For non-local environments, DATABASE_URL should already be set
-            pass
+            # For production/staging (Railway), ensure DATABASE_URL is set
+            if not self.DATABASE_URL:
+                if self.DATABASE_PUBLIC_URL:
+                    self.DATABASE_URL = self.DATABASE_PUBLIC_URL
+                else:
+                    raise ValueError(f"Production environment requires DATABASE_URL to be set")
 
-        # Configure CORS
+        # Validate that we have a database URL
+        if not self.DATABASE_URL:
+            raise ValueError("No database URL configured")
+
+        print(f"Final DATABASE_URL configured: {bool(self.DATABASE_URL)}")  # Debug - remove after fixing
+
+        # Configure CORS based on environment
         if self.ENV == "local":
             self.BACKEND_CORS_ORIGINS = [
                 "http://localhost:3000",
